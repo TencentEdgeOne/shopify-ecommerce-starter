@@ -116,6 +116,10 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
     return "In stock";
   }, [currentVariant]);
 
+  const unitPrice = currentVariant ? currentVariant.price : product.price;
+  const currencyCode = currentVariant?.currencyCode || product.currencyCode;
+  const totalPrice = unitPrice * quantity;
+
   if (!product) {
     return <div className="container mx-auto p-4">Product information loading...</div>;
   }
@@ -180,7 +184,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
         </div>
 
         <div className="text-3xl font-semibold">
-          {currentVariant ? formatPrice(currentVariant.price, currentVariant.currencyCode) : formatPrice(product.price, product.currencyCode)}
+          {formatPrice(totalPrice, currencyCode)}
         </div>
 
         {/* Options Selection */}
@@ -234,21 +238,27 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
 
         {/* Quantity and Add to Cart */}
         <div className="flex items-center space-x-4">
-          <div className="flex items-center border rounded-md">
-            <Button variant="ghost" size="icon" onClick={() => setQuantity(Math.max(1, quantity - 1))}
-              className="rounded-r-none cursor-pointer"
+          <div className="flex items-center rounded-md border border-gray-200 overflow-hidden">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setQuantity(Math.max(1, quantity - 1))}
+              className="rounded-none h-10 w-10 cursor-pointer hover:bg-gray-900 hover:text-white"
             >
               <Minus className="h-4 w-4" />
             </Button>
-            <input 
+            <input
               type="number"
               value={quantity}
               onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-              className="w-16 text-center border-l border-r focus:ring-0 focus:outline-none"
+              className="h-10 w-16 text-center border-x border-gray-200 focus:ring-0 focus:outline-none"
               min="1"
             />
-            <Button variant="ghost" size="icon" onClick={() => setQuantity(quantity + 1)}
-              className="rounded-l-none cursor-pointer"
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setQuantity(quantity + 1)}
+              className="rounded-none h-10 w-10 cursor-pointer hover:bg-gray-900 hover:text-white"
             >
               <Plus className="h-4 w-4" />
             </Button>

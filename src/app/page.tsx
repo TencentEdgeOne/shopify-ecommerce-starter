@@ -14,6 +14,8 @@ function convertToProductCardProps(product: Product): ProductCardProps {
     image: product.featuredImage?.url || product.images[0]?.url || '/placeholder.svg',
     slug: product.slug,
     variantId: product.variantId || product.variants[0]?.id || '',
+    availableForSale: product.availableForSale,
+    stock: product.stock,
   };
 }
 

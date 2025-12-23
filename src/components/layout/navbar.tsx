@@ -5,9 +5,12 @@ import { LogIn, ShoppingCart, User } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "../ui/button";
+import { useCart } from "@/context/cart-context";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { cart } = useCart();
+  const itemCount = cart?.totalQuantity ?? 0;
 
   return (
     <nav className="bg-white shadow-sm sticky top-0 z-50">
@@ -40,17 +43,27 @@ const Navbar = () => {
               </Button>
             </Link>
             <Link href="/cart" title="Shopping Cart">
-              <Button variant="ghost" size="icon" className="cursor-pointer">
+              <Button variant="ghost" size="icon" className="relative cursor-pointer">
                 <ShoppingCart className="h-5 w-5" />
                 <span className="sr-only">Shopping Cart</span>
+                {itemCount > 0 && (
+                  <span className="absolute -right-1 -top-1 inline-flex min-h-[18px] min-w-[18px] items-center justify-center rounded-full bg-red-500 px-1 text-xs font-semibold text-white">
+                    {itemCount}
+                  </span>
+                )}
               </Button>
             </Link>
           </div>
           <div className="flex items-center sm:hidden">
             <Link href="/cart" title="Shopping Cart" className="mr-2">
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className="relative">
                 <ShoppingCart className="h-6 w-6" />
                 <span className="sr-only">Shopping Cart</span>
+                {itemCount > 0 && (
+                  <span className="absolute -right-1 -top-1 inline-flex min-h-[18px] min-w-[18px] items-center justify-center rounded-full bg-red-500 px-1 text-xs font-semibold text-white">
+                    {itemCount}
+                  </span>
+                )}
               </Button>
             </Link>
             <button
@@ -141,4 +154,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar; 
+export default Navbar;

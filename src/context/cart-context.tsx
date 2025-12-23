@@ -183,8 +183,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (!currentCartId) {
       currentCartId = await createCart();
       if (!currentCartId) {
-        // Error handled by createCart
-        return;
+        throw new Error('Failed to create cart');
       }
     }
 
@@ -196,24 +195,28 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ cartId: currentCartId, variantId, quantity }),
       });
+
+      if (!response.ok) {
+        throw new Error(`Add to cart failed: ${response.status}`);
+      }
+
       const data = await response.json();
       if (data.success && data.cart) {
-        // Assuming data.cart matches RawShopifyCart structure
         const processedCart = processCartData(data.cart as RawShopifyCart);
         setCart(processedCart);
-        setCartIdState(processedCart.id); // Shopify might return the same or a new cart ID
+        setCartIdState(processedCart.id);
         if (typeof window !== 'undefined' && processedCart.id) {
-             localStorage.setItem(SHOPIFY_CART_ID_LS_KEY, processedCart.id);
+          localStorage.setItem(SHOPIFY_CART_ID_LS_KEY, processedCart.id);
         }
-        // toast.success('Item added to cart!'); // Handled in component for more context
-      } else {
-        throw new Error(data.message || 'Failed to add item to cart.');
+        return processedCart;
       }
+
+      throw new Error(data.message || 'Failed to add item to cart.');
     } catch (err: unknown) {
       console.error('Error adding item to cart:', err);
       const message = err instanceof Error ? err.message : 'An unknown error occurred.';
       setError(message);
-      // toast.error(`Failed to add item: ${message}`); // Handled in component
+      throw err;
     } finally {
       setIsLoading(false);
     }
