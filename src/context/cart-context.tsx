@@ -208,7 +208,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (typeof window !== 'undefined' && processedCart.id) {
           localStorage.setItem(SHOPIFY_CART_ID_LS_KEY, processedCart.id);
         }
-        return processedCart;
+        return;
       }
 
       throw new Error(data.message || 'Failed to add item to cart.');
