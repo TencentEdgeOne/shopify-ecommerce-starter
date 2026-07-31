@@ -2,6 +2,10 @@ import { ProductService } from '@/lib/shopify';
 import { Product } from '@/interfaces/product';
 import ProductDetailClient from "@/components/ui/product-detail-client";
 import { Metadata } from 'next';
+
+export const revalidate = 600;
+export const dynamicParams = true;
+
 interface Props {
   params: Promise<{
     slug: string;

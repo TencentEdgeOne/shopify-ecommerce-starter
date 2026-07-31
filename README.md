@@ -51,5 +51,12 @@ For test card numbers, refer to the documentation: https://help.shopify.com/en/m
 
 Create a `.env` file containing the following variables:
 
+```
+SHOPIFY_STORE_DOMAIN=yourshop.myshopify.com
+SHOPIFY_API_VERSION=2025-04
+SHOPIFY_STOREFRONT_ACCESS_TOKEN=your storefront api access token
+SHOPIFY_WEBHOOK_SECRET=your-webhook-secret
+```
+
 ## Deploy
 [![Deploy with EdgeOne Pages](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://edgeone.ai/pages/new?template=shopify-ecommerce-starter)

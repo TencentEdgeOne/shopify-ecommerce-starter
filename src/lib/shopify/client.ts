@@ -48,7 +48,8 @@ export class ShopifyClient {
    */
   async query<T = any>(
     query: string,
-    variables?: Record<string, any>
+    variables?: Record<string, any>,
+    fetchOptions?: { next?: { revalidate?: number } }
   ): Promise<ShopifyAPIResponse<T>> {
     try {
       const response = await fetch(this.endpoint, {
@@ -61,6 +62,7 @@ export class ShopifyClient {
           query,
           variables: variables || {},
         }),
+        ...(fetchOptions?.next ? { next: fetchOptions.next } : {}),
       });
 
       if (!response.ok) {
@@ -163,9 +165,10 @@ export const shopifyClient = new ShopifyClient();
 // Convenient query function
 export const shopifyQuery = <T = any>(
   query: string,
-  variables?: Record<string, any>
+  variables?: Record<string, any>,
+  fetchOptions?: { next?: { revalidate?: number } }
 ): Promise<ShopifyAPIResponse<T>> => {
-  return shopifyClient.query<T>(query, variables);
+  return shopifyClient.query<T>(query, variables, fetchOptions);
 };
 
 export const shopifyMutate = <T = any>(

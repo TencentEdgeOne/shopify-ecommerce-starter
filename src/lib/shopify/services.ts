@@ -153,8 +153,11 @@ export class ProductService {
   /**
    * Get product by handle
    */
-  static async getProductByHandle(handle: string): Promise<ShopifyAPIResponse> {
-    return shopifyClient.query(queries.GET_PRODUCT_BY_HANDLE_QUERY, { handle });
+  static async getProductByHandle(
+    handle: string,
+    fetchOptions?: { next?: { revalidate?: number } }
+  ): Promise<ShopifyAPIResponse> {
+    return shopifyClient.query(queries.GET_PRODUCT_BY_HANDLE_QUERY, { handle }, fetchOptions);
   }
 
   /**
@@ -166,7 +169,7 @@ export class ProductService {
     sortKey?: string;
     reverse?: boolean;
     query?: string;
-  } = {}): Promise<Array<Product>> {
+  } = {}, fetchOptions?: { next?: { revalidate?: number } }): Promise<Array<Product>> {
     const {
       first = 20,
       after,
@@ -181,7 +184,7 @@ export class ProductService {
       sortKey,
       reverse,
       query,
-    });
+    }, fetchOptions);
     return data.products.edges.map(({ node }: { node: any }) => {
         // Process image data
         const images: ProductImage[] = node.images.edges.map((edge: any)     => ({

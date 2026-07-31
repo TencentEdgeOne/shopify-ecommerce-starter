@@ -1,10 +1,7 @@
 import ProductListClient from '@/components/ui/product-list-client';
 import { ProductService } from '@/lib/shopify';
 
-// Configure static generation
-export const dynamic = 'force-static';
-export const dynamicParams = false;
-export const preferredRegion = 'auto';
+export const revalidate = 600;
 
 export const metadata = {
   title: 'All Products - Good Fortune Crystal Mall',

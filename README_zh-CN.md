@@ -57,6 +57,7 @@ edgeone pages dev
 SHOPIFY_STORE_DOMAIN=yourshop.myshopify.com
 SHOPIFY_API_VERSION=2025-04
 SHOPIFY_STOREFRONT_ACCESS_TOKEN=your storefront api access token
+SHOPIFY_WEBHOOK_SECRET=your-webhook-secret
 ```
 
 ## Deploy

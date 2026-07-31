@@ -5,6 +5,8 @@ import { Product } from "@/interfaces/product";
 import { ProductService } from '@/lib/shopify';
 import type { ProductCardProps } from "@/components/ui/product-card";
 
+export const revalidate = 600;
+
 // Convert Product to ProductCardProps
 function convertToProductCardProps(product: Product): ProductCardProps {
   return {
