@@ -58,5 +58,39 @@ SHOPIFY_STOREFRONT_ACCESS_TOKEN=your storefront api access token
 SHOPIFY_WEBHOOK_SECRET=your-webhook-secret
 ```
 
+## On-demand Revalidation
+
+This template supports Incremental Static Regeneration (ISR) — product pages are statically generated at build time and automatically refreshed when data changes.
+
+When a product is created, updated, or deleted in Shopify, a webhook triggers `revalidatePath()` to instantly purge the CDN cache:
+
+```ts
+// src/app/api/revalidate/route.ts
+import { revalidatePath } from 'next/cache';
+
+export async function POST(request: NextRequest) {
+  // Verify Shopify HMAC signature
+  const payload = JSON.parse(body);
+  const handle = payload.handle;
+
+  if (handle) {
+    revalidatePath(`/product/${handle}`);
+  }
+  revalidatePath('/product/list');
+  revalidatePath('/');
+
+  return NextResponse.json({ success: true });
+}
+```
+
+All pages also have `revalidate = 600` (10 minutes) as a time-based fallback. New products added after build are rendered on-demand without redeployment (`dynamicParams = true`).
+
+**Setting up Shopify Webhooks:**
+
+1. In Shopify admin, go to **Settings → Notifications → Webhooks**
+2. Create webhooks for `Product creation`, `Product update`, and `Product deletion`
+3. Set URL to `https://your-domain/api/revalidate`
+4. Copy the signing secret and set it as `SHOPIFY_WEBHOOK_SECRET` environment variable
+
 ## Deploy
 [![Deploy with EdgeOne Pages](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://edgeone.ai/pages/new?template=shopify-ecommerce-starter)

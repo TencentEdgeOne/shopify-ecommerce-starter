@@ -60,5 +60,38 @@ SHOPIFY_STOREFRONT_ACCESS_TOKEN=your storefront api access token
 SHOPIFY_WEBHOOK_SECRET=your-webhook-secret
 ```
 
+## 按需再生（On-demand Revalidation）
+
+本模板支持增量静态再生（ISR）— 商品页面在构建时静态生成，数据变更时自动刷新。
+
+当 Shopify 中的商品被创建、更新或删除时，Webhook 触发 `revalidatePath()` 即时清除 CDN 缓存：
+
+```ts
+// src/app/api/revalidate/route.ts
+import { revalidatePath } from 'next/cache';
+
+export async function POST(request: NextRequest) {
+  // 验证 Shopify HMAC 签名
+  const payload = JSON.parse(body);
+  const handle = payload.handle;
+
+  if (handle) {
+    revalidatePath(`/product/${handle}`);
+  }
+  revalidatePath('/product/list');
+  revalidatePath('/');
+
+  return NextResponse.json({ success: true });
+}
+```
+
+
+**配置 Shopify Webhook：**
+
+1. 在 Shopify 管理后台，进入 **Settings → Notifications → Webhooks**
+2. 为 `Product creation`、`Product update`、`Product deletion` 各创建一个 Webhook
+3. URL 填写 `https://你的域名/api/revalidate`
+4. 复制签名密钥，设置为环境变量 `SHOPIFY_WEBHOOK_SECRET`
+
 ## Deploy
 [![使用 EdgeOne Pages 部署](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://console.cloud.tencent.com/edgeone/pages/new?template=shopify-ecommerce-starter)
