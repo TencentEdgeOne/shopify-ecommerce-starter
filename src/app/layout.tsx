@@ -18,8 +18,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Crystal Mall - High-Quality Crystals",
-  description: "Offering high-quality crystals from various brands, meeting your good luck needs.",
+  title: "Crystal Mall - High-Quality Crystals | EdgeOne Makers",
+  description: "Offering high-quality crystals from various brands, meeting your good luck needs. · Demo only · EdgeOne Makers",
+  keywords: "EdgeOne Makers, Demo only",
   icons: {
     icon: [
       { url: '/favicon.ico' },
