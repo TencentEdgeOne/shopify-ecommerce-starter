@@ -39,7 +39,7 @@ export default function LoginPage() {
     // Error will be handled by the error state from useAuth()
   };
   
-  if (isRedirecting || isLoading) {
+  if (isRedirecting) {
     return (
       <div className="container mx-auto px-4 py-12 text-center">
         <p>You have logged in. Redirecting to your account...</p>

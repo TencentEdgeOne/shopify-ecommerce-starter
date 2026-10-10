@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
         descriptionHtml: node.descriptionHtml,
         image: node.image?.url || '',
         imageAlt: node.image?.altText || node.title,
-        productsCount: node.productsCount,
+        productsCount: node.productsCount?.count ?? node.productsCount ?? 0,
         updatedAt: node.updatedAt
       };
     }) || [];

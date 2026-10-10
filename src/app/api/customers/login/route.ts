@@ -45,9 +45,13 @@ export async function POST(request: NextRequest) {
     const userErrors = result.data?.customerAccessTokenCreate?.customerUserErrors;
 
     if (userErrors && userErrors.length > 0) {
+      const raw = userErrors[0].message || 'Login failed.';
+      const message = /unidentified customer/i.test(raw)
+        ? 'Email or password is incorrect. Register a new account if you do not have one yet.'
+        : raw;
       return NextResponse.json({
         success: false,
-        message: userErrors[0].message,
+        message,
         errors: userErrors,
       }, {
         status: 401,

@@ -149,9 +149,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       });
       const data = await response.json();
       if (data.success) {
-        // Don't automatically log in; user should go to login page
-        setIsLoading(false);
-        return { success: true };
+        return login(details.email, details.password);
       } else {
         setError(data.message || "Registration failed.");
         setIsLoading(false);

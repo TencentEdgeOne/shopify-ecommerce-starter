@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Terminal, CheckCircle2 } from "lucide-react";
+import { Terminal } from "lucide-react";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -19,7 +19,6 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [formError, setFormError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
 
   useEffect(() => {
@@ -32,7 +31,6 @@ export default function RegisterPage() {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     setFormError(null);
-    setSuccessMessage(null);
 
     if (!email || !password || !firstName) { // Basic validation
       setFormError("Please enter your name, email, and password.");
@@ -46,13 +44,9 @@ export default function RegisterPage() {
     const result = await register({ firstName, lastName, email, password });
 
     if (result?.success) {
-      setSuccessMessage("Account created successfully! You can now log in.");
-      // Optionally, redirect to login or clear form
-      // router.push('/account/login');
-      setFirstName('');
-      setLastName('');
-      setEmail('');
-      setPassword('');
+      setIsRedirecting(true);
+      router.push('/account');
+      return;
     } else if (result?.error) {
       setFormError(result.error);
     } else if (authError) {
@@ -62,10 +56,10 @@ export default function RegisterPage() {
     }
   };
 
-  if (isRedirecting || isLoading) {
+  if (isRedirecting) {
     return (
       <div className="container mx-auto px-4 py-12 text-center">
-        <p>You have logged in. Redirecting to your account...</p>
+        <p>Account created. Signing you in...</p>
       </div>
     );
   }
@@ -90,15 +84,6 @@ export default function RegisterPage() {
                 </AlertDescription>
               </Alert>
             )}
-            {successMessage && (
-              <Alert variant="default" className="bg-green-50 border-green-300 text-green-700">
-                 <CheckCircle2 className="h-4 w-4 text-green-600" />
-                <AlertTitle className="font-semibold">Registration Successful</AlertTitle>
-                <AlertDescription>
-                  {successMessage} Please go to the <Link href="/account/login" className="font-medium hover:underline">login page</Link>.
-                </AlertDescription>
-              </Alert>
-            )}
              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="firstName">First Name</Label>
@@ -109,7 +94,7 @@ export default function RegisterPage() {
                   required 
                   value={firstName}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFirstName(e.target.value)}
-                  disabled={isLoading || !!successMessage}
+                  disabled={isLoading}
                 />
               </div>
               <div className="space-y-2">
@@ -120,7 +105,7 @@ export default function RegisterPage() {
                   placeholder="Doe" 
                   value={lastName}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLastName(e.target.value)}
-                  disabled={isLoading || !!successMessage}
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -133,7 +118,7 @@ export default function RegisterPage() {
                 required 
                 value={email}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-                disabled={isLoading || !!successMessage}
+                disabled={isLoading}
               />
             </div>
             <div className="space-y-2">
@@ -145,13 +130,13 @@ export default function RegisterPage() {
                 required 
                 value={password}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-                disabled={isLoading || !!successMessage}
+                disabled={isLoading}
               />
             </div>
           </CardContent>
           <CardFooter className="flex flex-col items-center space-y-4 p-6 pt-0">
-            <Button type="submit" className="w-full text-base py-3" disabled={isLoading || !!successMessage}>
-              {isLoading ? 'Registering...' : 'Register'}
+            <Button type="submit" className="w-full text-base py-3" disabled={isLoading}>
+              {isLoading ? 'Creating account...' : 'Register'}
             </Button>
             <div className="text-center text-sm">
               Already have an account?{' '}

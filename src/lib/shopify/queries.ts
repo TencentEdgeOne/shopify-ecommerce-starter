@@ -431,7 +431,6 @@ export const GET_COLLECTIONS_QUERY = `
         cursor
         node {
           ...CollectionFragment
-          productsCount
         }
       }
     }
